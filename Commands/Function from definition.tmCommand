@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>beforeRunningCommand</key>
+	<string>nop</string>
+	<key>command</key>
+	<string>#!/usr/bin/ruby
+# just to remind you of some useful environment variables
+# see Help / Environment Variables for the full list
+require 'uri'
+
+directory = File.dirname(ENV["TM_FILEPATH"])
+classname = File.basename(directory)
+line = ENV["TM_CURRENT_LINE"]
+
+def rescan_project
+  `osascript &amp;&gt;/dev/null \
+	   -e 'tell app "SystemUIServer" to activate'; \
+	 osascript &amp;&gt;/dev/null \
+	   -e 'tell app "TextMate" to activate' &amp;`
+end
+
+if line =~ / [*&amp;]*([a-zA-Z]+)\([a-zA-Z*: 0-9&amp;]*\)( const)?;$/
+	functionname = $1
+else
+	puts "Could not detect a function name"
+end
+
+file = File.join(directory, functionname.downcase) + ".cc"
+
+if File.exists? file
+	`mate "#{file}"`
+	exit
+end
+	
+File.open(file, "w") do |f|
+	f.puts &lt;&lt;-EOF
+#include "#{classname}.ih"
+
+#{line.gsub(/^[\t ]+/, "").gsub(/std::/, "").gsub(/;/, "")}
+{
+	
+}
+EOF
+end
+
+rescan_project
+sleep(0.1)
+f = "file://" + URI.escape(file)
+puts f
+`open txmt://open?url=#{f}`
+`open txmt://open?line=5`</string>
+	<key>input</key>
+	<string>none</string>
+	<key>keyEquivalent</key>
+	<string>$@</string>
+	<key>name</key>
+	<string>Function from definition</string>
+	<key>output</key>
+	<string>showAsTooltip</string>
+	<key>scope</key>
+	<string>source.c++</string>
+	<key>uuid</key>
+	<string>A196A51A-6EFA-43B8-ABBE-43761AE3F3B7</string>
+</dict>
+</plist>

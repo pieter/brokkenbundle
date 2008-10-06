@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>name</key>
+	<string>Brokkenbundle</string>
+	<key>ordering</key>
+	<array>
+		<string>A196A51A-6EFA-43B8-ABBE-43761AE3F3B7</string>
+		<string>163D0303-44A8-4498-A777-CF61A54819FB</string>
+		<string>0554B942-3F8C-46B9-A34A-DA45611B7606</string>
+	</array>
+	<key>uuid</key>
+	<string>8D134E07-BA26-412E-9705-9B0A232D7BF7</string>
+</dict>
+</plist>

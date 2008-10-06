@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>beforeRunningCommand</key>
+	<string>nop</string>
+	<key>command</key>
+	<string>#!/usr/bin/ruby
+
+require ENV['TM_SUPPORT_PATH'] + '/lib/textmate.rb'
+require ENV['TM_SUPPORT_PATH'] + '/lib/ui.rb'
+require 'fileutils'
+
+def rescan_project
+  `osascript &amp;&gt;/dev/null \
+	   -e 'tell app "SystemUIServer" to activate'; \
+	 osascript &amp;&gt;/dev/null \
+	   -e 'tell app "TextMate" to activate' &amp;`
+end
+
+unless directory = ENV["TM_SELECTED_FILE"] || ENV["TM_PROJECT_DIRECTORY"]
+  puts "Could not find a directory to create class in"
+  exit 1
+end
+
+unless File.directory? directory
+  directory = File.dirname(directory)
+end
+
+classname = TextMate::UI.request_string(:title =&gt; "New Class", :prompt =&gt; "Enter a new class name")
+
+directory = File.join(directory, classname.downcase)
+
+if File.exists? directory
+  puts "Class directory already exists"
+  exit 1
+end
+
+FileUtils.mkdir(directory)
+
+# Create necessary files
+
+File.open(File.join(directory, "#{classname.downcase}.h"), "w") do |f|
+  f.puts &lt;&lt;-EOF
+#ifndef _INCLUDED_#{classname.upcase}_
+#define _INCLUDED_#{classname.upcase}_
+
+class #{classname}
+{
+
+	public:
+		#{classname}();
+
+	private:
+};
+
+#endif /* _INCLUDED_#{classname.upcase}_ */
+EOF
+end
+
+#Internal Header
+File.open(File.join(directory, "#{classname.downcase}.ih"), "w") do |f|
+  f.puts &lt;&lt;-EOF
+#include "#{classname.downcase}.h"
+
+using namespace std;
+EOF
+end
+
+File.open(File.join(directory, "#{classname.downcase}1.cc"), "w") do |f|
+  f.puts &lt;&lt;-EOF
+#include "#{classname.downcase}.ih"
+
+#{classname}::#{classname}()
+//:
+{
+}
+EOF
+end
+
+rescan_project
+sleep 0.1
+`mate "#{directory}/#{classname.downcase}.h"`
+puts "Created #{classname} in #{directory}"</string>
+	<key>input</key>
+	<string>selection</string>
+	<key>keyEquivalent</key>
+	<string>@C</string>
+	<key>name</key>
+	<string>New Class</string>
+	<key>output</key>
+	<string>showAsTooltip</string>
+	<key>scope</key>
+	<string>source.c++</string>
+	<key>uuid</key>
+	<string>0554B942-3F8C-46B9-A34A-DA45611B7606</string>
+</dict>
+</plist>

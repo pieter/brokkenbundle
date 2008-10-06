@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>beforeRunningCommand</key>
+	<string>nop</string>
+	<key>command</key>
+	<string>#!/usr/bin/ruby
+
+file = ENV["TM_FILEPATH"]
+directory = File.dirname(file)
+classname = File.basename(directory)
+
+`mate "#{directory}/#{classname}.h"`</string>
+	<key>input</key>
+	<string>none</string>
+	<key>keyEquivalent</key>
+	<string>$@</string>
+	<key>name</key>
+	<string>Go To Header</string>
+	<key>output</key>
+	<string>discard</string>
+	<key>scope</key>
+	<string>source.c++</string>
+	<key>uuid</key>
+	<string>163D0303-44A8-4498-A777-CF61A54819FB</string>
+</dict>
+</plist>
